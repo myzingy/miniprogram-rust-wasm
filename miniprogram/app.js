@@ -8,6 +8,7 @@ App({
 
     Rust.then(function (demo) {
       let name = "Rust";
+      console.log('demo',demo);
       let hash = demo.sha1(name);
       wx.showModal({
         title: 'SHA1测试',

@@ -1,0 +1,13 @@
+[package]
+name = "ministdweb"
+version = "0.1.0"
+authors = ["wangfan <fan.wang@colorcun.com>"]
+edition = "2018"
+
+[dependencies]
+stdweb = "0.4.10"
+
+[profile.release]
+lto = true #必须加，否则asm.js编译不过
+opt-level = 's'
+panic = 'abort'

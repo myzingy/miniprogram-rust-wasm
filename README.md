@@ -27,3 +27,7 @@ var Rust = require("workers/stdwebdemo.js");
 ## 编译可能出现的问题，请参考下方图片
 ![链接](./rust.png)
 
+## 以下是我学习 Webassembly 时趟的坑，主要是 rust 方面，希望帮助你
+
+http://naotu.baidu.com/file/801c1ea6af601052c77284fee2c5480c?token=5a2cd34fc4bb5de3
+

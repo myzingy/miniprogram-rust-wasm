@@ -2,12 +2,14 @@
 
 Rust + Webassembly 开发微信小程序
 
-环境依赖 rust && node
+# 环境依赖
 ## rust
-stdweb
-cargo-web (可能依赖)
-
-编译
+安装 rust 
+    https://doc.rust-lang.org/cargo/getting-started/installation.html
+## node
+ 安装node环境
+ 
+## 编译
 
 cd stdwebdemo
 ./build.cmd
@@ -21,4 +23,7 @@ var Rust = require("workers/stdwebdemo.js");
       console.log('demo',demo,demo.add(1,1));
     });
 ````
+
+## 编译可能出现的问题，请参考下方图片
+![链接](./rust.png)
 

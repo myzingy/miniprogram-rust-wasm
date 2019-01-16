@@ -3,17 +3,11 @@
 //app.js
 App({
   onLaunch: function () {
-    // demo.js是crate-type = ["cdylib"]
-    var Rust = require("demo.js");
+    var Rust = require("workers/stdwebdemo.js");
 
     Rust.then(function (demo) {
       let name = "Rust";
-      console.log('demo',demo);
-      let hash = demo.sha1(name);
-      wx.showModal({
-        title: 'SHA1测试',
-        content: "\"" + name + "\"的SHA1是" + hash,
-      });
+      console.log('demo',demo,demo.add(1,1));
     });
   }
 })

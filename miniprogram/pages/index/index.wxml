@@ -1,3 +1,7 @@
 <view class="container">
-    <text>Webassembly</text>
+    <view>碰撞 demo</view>
+</view>
+<view class="container">
+    <text>rust-wasm</text>
+    <canvas style="width: {{width}}px; height: {{height}}px;" canvas-id="canvas"></canvas>
 </view>

@@ -1,120 +1,94 @@
 //index.js
-const app = getApp()
-
+const app= getApp()
+const {regeneratorRuntime} = app
+const circle = function(width,height){
+  this.param={}
+  this.init=()=>{
+    let x=parseInt(Math.random()*width);
+    let y=parseInt(Math.random()*height);
+    this.param={
+      x:x,
+      y:y,
+      fx:1,//向量
+      fy:1,
+      mx:5,//步长
+      my:5,
+    }
+    return this;
+  }
+  this.running=()=>{
+    let x=this.param.x+this.param.mx*this.param.fx;
+    if(x<=0 || x>=width){
+      this.param.fx*=-1;
+      this.param.x=x<=0?0:width;
+    }else{
+      this.param.x=x
+    }
+    let y=this.param.y+this.param.my*this.param.fy;
+    if(y<=0 || y>=height){
+      this.param.fy*=-1;
+      this.param.y=y<=0?0:height;
+    }else{
+      this.param.y=y
+    }
+  }
+  return this.init()
+}
+const circleGroup=function(num,width,height){
+  this.circles=[];
+  this.running=()=>{
+    let that=this;
+    return new Promise(function(success,fail){
+      that.circles.forEach(circle=>{
+        circle.running()
+      })
+      success();
+    })
+  }
+  this.init=()=>{
+    for(let i=0;i<num;i++){
+      this.circles.push(new circle(width,height))
+    }
+    //console.log('this.circles',this.circles)
+    return this;
+  }
+  this.display=async (draw)=>{
+    await this.running()
+    this.circles.forEach(circle=>{
+      //console.log('draw(circle.param);',circle.param)
+      draw(circle.param);
+    })
+  }
+  return this.init(num,width,height)
+}
 Page({
-  data: {
-    avatarUrl: './user-unlogin.png',
-    userInfo: {},
-    logged: false,
-    takeSession: false,
-    requestResult: ''
+  data:{
+    width:300,
+    height:500,
   },
-
   onLoad: function() {
-    if (!wx.cloud) {
-      wx.redirectTo({
-        url: '../chooseLib/chooseLib',
-      })
-      return
-    }
 
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              this.setData({
-                avatarUrl: res.userInfo.avatarUrl,
-                userInfo: res.userInfo
-              })
-            }
-          })
-        }
-      }
-    })
   },
+  circles:[],
+  async onReady(e) {
+    // 使用 wx.createContext 获取绘图上下文 context
+    this.context = wx.createCanvasContext('canvas')
+    let cgs=new circleGroup(100,this.data.width,this.data.height);
+    //this.context.beginPath()
+    //while(true){
+      this.context.setFillStyle('lightgreen')
+      await cgs.display(this.drawArc);
+      this.context.draw()
+    //}
 
-  onGetUserInfo: function(e) {
-    if (!this.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo
-      })
-    }
   },
+  onShow(){
 
-  onGetOpenid: function() {
-    // 调用云函数
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-        app.globalData.openid = res.result.openid
-        wx.navigateTo({
-          url: '../userConsole/userConsole',
-        })
-      },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-        wx.navigateTo({
-          url: '../deployFunctions/deployFunctions',
-        })
-      }
-    })
   },
-
-  // 上传图片
-  doUpload: function () {
-    // 选择图片
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: function (res) {
-
-        wx.showLoading({
-          title: '上传中',
-        })
-
-        const filePath = res.tempFilePaths[0]
-        
-        // 上传图片
-        const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-        wx.cloud.uploadFile({
-          cloudPath,
-          filePath,
-          success: res => {
-            console.log('[上传文件] 成功：', res)
-
-            app.globalData.fileID = res.fileID
-            app.globalData.cloudPath = cloudPath
-            app.globalData.imagePath = filePath
-            
-            wx.navigateTo({
-              url: '../storageConsole/storageConsole'
-            })
-          },
-          fail: e => {
-            console.error('[上传文件] 失败：', e)
-            wx.showToast({
-              icon: 'none',
-              title: '上传失败',
-            })
-          },
-          complete: () => {
-            wx.hideLoading()
-          }
-        })
-
-      },
-      fail: e => {
-        console.error(e)
-      }
-    })
+  drawArc(pos){
+    let ctx=this.context;
+    ctx.beginPath()
+    ctx.arc(pos.x, pos.y, 5, 0, 2 * Math.PI)
+    ctx.fill()
   },
-
 })

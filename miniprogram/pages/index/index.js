@@ -130,7 +130,7 @@ Page({
     this.cgs=new circleGroup(800,this.data.width,this.data.height);
     setInterval(()=>{
       this.draw()
-    },0)
+    },1000/60)
 
   },
   onShow(){
@@ -164,7 +164,7 @@ Page({
     let time=etime-stime;
     let ctx=this.context;
     ctx.setFontSize(20)
-    ctx.setFillStyle('black')
+    ctx.setFillStyle('red')
     ctx.fillText('FPS:'+parseInt(1000/time), 20, 20)
   },
 })

@@ -6,11 +6,10 @@ App({
   ...vk,
   regeneratorRuntime:regeneratorRuntime,
   onLaunch: function () {
-    // var Rust = require("workers/stdwebdemo.js");
-    //
+    // var Rust = require("workers/stdcollision.js");
     // Rust.then(function (demo) {
     //   let name = "Rust";
-    //   console.log('demo',demo,demo.add(1,1));
+    //   console.log('demo',demo);
     // });
   }
 })

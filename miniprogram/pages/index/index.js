@@ -118,16 +118,21 @@ Page({
   data:{
     width:300,
     height:500,
+    num:800,
   },
   onLoad: function() {
-
+    var Rust = require("../../workers/stdcollision.js");
+    Rust.then((demo)=>{
+      let name = "Rust";
+      console.log('demo',demo,demo.circle_group_init(this.data.num,this.data.width,this.data.height));
+    })
   },
   circles:[],
   scheduledAnimationFrame:false,
   onReady(e) {
     // 使用 wx.createContext 获取绘图上下文 context
     this.context = wx.createCanvasContext('canvas')
-    this.cgs=new circleGroup(800,this.data.width,this.data.height);
+    this.cgs=new circleGroup(this.data.num,this.data.width,this.data.height);
     setInterval(()=>{
       this.draw()
     },1000/60)

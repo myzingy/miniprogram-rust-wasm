@@ -5,11 +5,10 @@ extern crate rand;
 use stdweb::js_export;
 use rand::Rng;
 
-fn main() {
-    println!("Hello, world!");
-}
+fn main(){}
 
-struct Pos{
+#[derive(Debug)]
+pub struct Pos{
     x:i32,
     y:i32,
     fx:i32,//向量
@@ -20,7 +19,8 @@ struct Pos{
     fc:i32,//颜色向量
     size:i32,
 }
-struct Circle {
+#[derive(Debug)]
+pub struct Circle {
     param:  Pos,
 }
 impl Circle{
@@ -49,7 +49,7 @@ impl Circle{
 
     }
 }
-fn circle_init(width:i32,height:i32) -> Circle{
+pub fn circle_init(width:i32,height:i32) -> Circle{
     let p=Pos{
         x:rand::thread_rng().gen_range(0, width),
         y:rand::thread_rng().gen_range(0, height),
@@ -61,17 +61,21 @@ fn circle_init(width:i32,height:i32) -> Circle{
         fc:100,//颜色向量
         size:4,
     };
-    return Circle{
-      param:p
+    //println!("circle.print:{:?}",p);
+    let ci=Circle{
+        param:p
     };
+    //println!("circle.print:{:?}",ci);
+    return ci;
 }
 
 
-struct CircleGroup{
+pub struct CircleGroup{
     circles:Vec<Circle>,
     width:i32,
     height:i32,
 }
+
 impl CircleGroup{
     fn running(&mut self){
         for cir in &mut self.circles {
@@ -81,17 +85,17 @@ impl CircleGroup{
     }
     fn init(&mut self,num:i32,width:i32,height:i32){
         for _i in 0..num {
-            self.circles.push(circle_init(width,height))
+            let ci=circle_init(width,height);
+            self.circles.push(ci)
         }
     }
     fn display(&mut self){
         self.running();
+        //println!("CircleGroup.print:{:?}",self);
     }
 }
 
 #[js_export]
-
-
 fn circle_group_init(num:i32,width:i32,height:i32){
     let mut cg=CircleGroup{
         circles:Vec::new(),
@@ -100,6 +104,7 @@ fn circle_group_init(num:i32,width:i32,height:i32){
     };
     cg.init(num,width,height);
     js! {
-        console.log("cg.circles",@{cg.width})
+        //console.log("cg.circles",@{cg.width})
+        console.log("circle_group_init end")
     }
 }

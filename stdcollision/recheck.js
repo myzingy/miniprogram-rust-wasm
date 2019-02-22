@@ -29,21 +29,33 @@ var new_content = asmjs.replace('"use strict";',`
 WebAssembly.instantiateStreaming='';
 var fetch = function (filePath,param={}) {
   return new Promise(function (resolve, reject) {
-    let fsm = wx.getFileSystemManager();
-    fsm.readFile({
-      filePath: '/workers/'+filePath,
-      success: function (res) {
-        console.log('fsm.readFile.success',res.data);
-        res.data.arrayBuffer=function () {
-          return res.data
-        }
-        resolve(res.data);
+    //down http://qn.colorcun.com/stdcollision.wasm
+    wx.downloadFile({
+      url:'http://qn.colorcun.com/'+filePath+'?'+Math.random(),
+      success:function(res){
+        //read
+        let fsm = wx.getFileSystemManager();
+        fsm.readFile({
+          //filePath: '/workers/'+filePath,
+          filePath: res.tempFilePath,
+          success: function (res) {
+            console.log('fsm.readFile.success',res.data);
+            res.data.arrayBuffer=function () {
+              return res.data
+            }
+            resolve(res.data);
+          },
+          fail: function (err) {
+            console.log('fsm.readFile.fail',err);
+            reject(err);
+          }
+        });
       },
       fail: function (err) {
-          console.log('fsm.readFile.fail',err);
+        console.log('fsm.downFile.fail',err);
         reject(err);
       }
-    });
+    })
   })
 }
 `);

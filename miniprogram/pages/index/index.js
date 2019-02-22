@@ -124,9 +124,8 @@ Page({
     var Rust = require("../../workers/stdcollision.js");
     Rust.then((demo)=>{
       let name = "Rust";
-      console.log('demo',demo);
+      console.log('stdcollision',demo);
       demo.circle_group_init(this.data.num,this.data.width,this.data.height)
-      //console.log(demo.circle_group_init(parseInt(this.data.num),parseInt(this.data.width),parseInt(this.data.height)));
     })
   },
   circles:[],
